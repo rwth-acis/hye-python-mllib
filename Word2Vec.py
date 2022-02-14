@@ -9,6 +9,7 @@ stop_words = set(stopwords.words('english'))
 punctuation = set({' ', '\n', '\t', '`', '~', '!', '@', '#', '$', '%', '^',\
                 '&', '*', '(', ')', '-', '_', '=', '+', '[', ']', ';', ':',\
                 '\'', '"', '\\', '|', '<', '>', ',', '.', '/', '?'})
+httpSignifiers = set({'http', 'https', 'www.'})
 
 # Load C library for computing word vectors
 lib = CDLL('./libwordcenter.so')
@@ -56,16 +57,47 @@ def cFloatArrayToList(cFloatArray):
     return pyArray
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# Removes stop words and punctuation from given list of words
+# Makes an educated guess whether given string is an Email address
+#
+# string -> String to check for the trappings of a typical Email address
+#
+# Returns: True if given string looks like an Email address, False otherwise
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+def isEmail(string):
+    splitAt = string.split('@')
+    if not len(splitAt) == 2:
+        return False
+    splitDot = splitAt.split('.')
+    if len(splitDot) < 2 or len(splitDot[1]) == 0:
+        return False
+    return True
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Makes an educated guess whether given string is a URL
+#
+# string -> String to check for the trappings of a typical URL
+#
+# Returns: True if given string looks like a URL, False otherwise
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+def isUrl(string):
+    for pattern in httpSignifiers:
+        if string.lower().startswith(pattern):
+            return True
+    return False
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Removes stop words, URLs, Email addresses, and punctuation from given list of
+# words
 #
 # wordList -> Python list of words
 #
 # Same words as in given list but without stop words or punctuation
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-def removeStopWords(wordList):
+def filterWordList(wordList):
     resultWords = list()
     for word in wordList:
-        if not word in stop_words and not word in punctuation:
+        if not word in stop_words and not word in punctuation\
+        and not isUrl(word) and not isEmail(word):
             resultWords.append(word)
     return resultWords
 
@@ -77,7 +109,7 @@ def removeStopWords(wordList):
 # Returns: Vector of float numbers representing the center of the given words
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 def computeCenter(words):
-    wordList = removeStopWords(words)
+    wordList = filterWordList(words)
     return cFloatArrayToList(lib.compute_center(padWords(wordList),\
         len(wordList)))
 

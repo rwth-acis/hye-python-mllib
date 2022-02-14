@@ -90,12 +90,18 @@ int load_model(char *file_name) {
 }
 
 void free_model() {
-    if (model != NULL)
+    if (model != NULL) {
         free(model);
-    if (dictionary != NULL)
+        model = NULL;
+    }
+    if (dictionary != NULL) {
         free(dictionary);
-    if (word_center != NULL)
+        dictionary = NULL;
+    }
+    if (word_center != NULL) {
         free(word_center);
+        word_center = NULL;
+    }
 }
 
 float *compute_center(char *words, unsigned int num_words) {
