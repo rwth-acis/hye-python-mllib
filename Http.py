@@ -190,6 +190,8 @@ def route_request(method, path, body = None):
         return model(method, path_split[2:], body)
     elif path_split[1].lower() == "word2vec":
         return word2vec(method, path_split[2:], body)
+    return {"status": 404, "content-type": "text/plain", "msg":\
+            "Unknown resource: " + path}
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Helper function to determine whether given string can be cast to int
