@@ -1,0 +1,16 @@
+# Word2Vec models
+*.bin
+models/
+
+# pycache
+__pycache__/
+
+# C build files
+*.o
+*.so
+
+# git
+.git/
+
+# Misc
+test.json
