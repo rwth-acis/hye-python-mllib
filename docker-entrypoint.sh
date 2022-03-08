@@ -13,4 +13,5 @@ if [ -n "$MODEL_URL" ]; then
     sed -i "s|MODEL_FILE = b\"./GoogleNews-vectors-negative300.bin\"|MODEL_FILE = b\"${MODEL_LOCATION}\"|" Word2Vec.py
 fi
 
+PATH="$PATH:/home/newuser/.local/lib/python3.7/"
 python3 Http.py
