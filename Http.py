@@ -4,6 +4,7 @@ import traceback
 import re
 import ModelStorage as ms
 import Word2Vec as w2v
+import Config as config
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Helper function to build json response
@@ -297,7 +298,6 @@ class CustomHandler(BaseHTTPRequestHandler):
         self.wfile.write(response['msg'].encode())
 
 # Start server
-PRT = 8000
-srv = HTTPServer(('',PRT), CustomHandler)
-print('Server started on port %s' %PRT)
+srv = HTTPServer(('',config.port), CustomHandler)
+print('Server started on port %s' %config.port)
 srv.serve_forever()

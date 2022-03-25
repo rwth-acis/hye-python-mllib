@@ -1,6 +1,7 @@
 from ctypes import *
 import io
 import nltk
+import Config as config
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 nltk.download('stopwords')
@@ -9,7 +10,7 @@ stop_words = set(stopwords.words('english'))
 punctuation = set({' ', '\n', '\t', '`', '~', '!', '@', '#', '$', '%', '^',\
                 '&', '*', '(', ')', '-', '_', '=', '+', '[', ']', ';', ':',\
                 '\'', '"', '\\', '|', '<', '>', ',', '.', '/', '?'})
-httpSignifiers = set({'http', 'https', 'www.'})
+httpSignifiers = set({'http:', 'https:', 'www.'})
 
 # Load C library for computing word vectors
 lib = CDLL('./libwordcenter.so')
@@ -22,8 +23,6 @@ lib.get_dictionary.restype = c_char_p
 lib.get_dimensionality.restype = c_longlong
 lib.get_dictionary_size.restype = c_longlong
 
-# Location of model file
-MODEL_FILE = b"./GoogleNews-vectors-negative300.bin"
 # Same value as in 'word_center.h'
 MAX_WORD_LENGTH = 50
 
@@ -117,7 +116,7 @@ def computeCenter(words):
 # Initializes the C library by loading the model from the local binary file
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 def loadModel():
-    lib.load_model(MODEL_FILE)
+    lib.load_model(bytes(config.word2vec_model, "utf-8"))
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Frees the memory allocated to hold the model

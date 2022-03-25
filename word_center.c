@@ -146,7 +146,7 @@ float *compute_center(char *words, unsigned int num_words) {
         word_center[i] = sum / valid_words;
     }
 
-    // Find closest word to computed center and print if
+    // Find closest word to computed center and print it
     float min_distance = 999999;
     long long closest_word = -1;
     for (long long i = 0; i < dictionary_size; i++) {
